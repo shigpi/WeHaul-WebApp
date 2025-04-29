@@ -1,0 +1,251 @@
+/* Retro Gamer Theme for WeHaul */
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+
+:root {
+    /* Light Theme */
+    --bg-color-light: #f0f0f0;
+    --text-color-light: #222;
+    --primary-color-light: #007bff; /* Blue */
+    --secondary-color-light: #ff4500; /* OrangeRed */
+    --accent-color-light: #ffd700; /* Gold */
+    --border-color-light: #ccc;
+    --card-bg-light: #fff;
+    --header-bg-light: linear-gradient(45deg, #007bff, #0056b3);
+    --nav-bg-light: #e9ecef;
+    --button-bg-light: var(--primary-color-light);
+    --button-text-light: #fff;
+    --button-hover-bg-light: #0056b3;
+
+    /* Dark Theme */
+    --bg-color-dark: #1a1a1a;
+    --text-color-dark: #e0e0e0;
+    --primary-color-dark: #00ffcc; /* Neon Teal */
+    --secondary-color-dark: #ff00ff; /* Neon Magenta */
+    --accent-color-dark: #ffff00; /* Neon Yellow */
+    --border-color-dark: #444;
+    --card-bg-dark: #2a2a2a;
+    --header-bg-dark: linear-gradient(45deg, #333, #111);
+    --nav-bg-dark: #333;
+    --button-bg-dark: var(--primary-color-dark);
+    --button-text-dark: #1a1a1a;
+    --button-hover-bg-dark: #00cca3;
+
+    /* Default to Light Theme */
+    --bg-color: var(--bg-color-light);
+    --text-color: var(--text-color-light);
+    --primary-color: var(--primary-color-light);
+    --secondary-color: var(--secondary-color-light);
+    --accent-color: var(--accent-color-light);
+    --border-color: var(--border-color-light);
+    --card-bg: var(--card-bg-light);
+    --header-bg: var(--header-bg-light);
+    --nav-bg: var(--nav-bg-light);
+    --button-bg: var(--button-bg-light);
+    --button-text: var(--button-text-light);
+    --button-hover-bg: var(--button-hover-bg-light);
+}
+
+body.dark-theme {
+    --bg-color: var(--bg-color-dark);
+    --text-color: var(--text-color-dark);
+    --primary-color: var(--primary-color-dark);
+    --secondary-color: var(--secondary-color-dark);
+    --accent-color: var(--accent-color-dark);
+    --border-color: var(--border-color-dark);
+    --card-bg: var(--card-bg-dark);
+    --header-bg: var(--header-bg-dark);
+    --nav-bg: var(--nav-bg-dark);
+    --button-bg: var(--button-bg-dark);
+    --button-text: var(--button-text-dark);
+    --button-hover-bg: var(--button-hover-bg-dark);
+}
+
+body {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px; /* Pixel fonts look better at specific sizes */
+    line-height: 1.6;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+    image-rendering: pixelated; /* Make images look pixelated */
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.header {
+    background: var(--header-bg);
+    color: white;
+    padding: 1rem;
+    text-align: center;
+    border-bottom: 4px solid var(--border-color);
+    image-rendering: crisp-edges;
+}
+
+.header h1 {
+    font-size: 1.8rem; /* Adjust size for pixel font */
+    margin: 0;
+    text-shadow: 2px 2px #000;
+}
+
+.nav {
+    background: var(--nav-bg);
+    padding: 0.5rem 0;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+}
+
+.nav li {
+    padding: 0.5rem 1rem;
+}
+
+.nav a {
+    color: var(--primary-color);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.nav a:hover {
+    color: var(--secondary-color);
+    text-decoration: underline;
+}
+
+.container {
+    max-width: 800px;
+    margin: 1.5rem auto;
+    padding: 1.5rem;
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    box-shadow: 4px 4px 0px var(--border-color);
+}
+
+h1, h2, h3 {
+    color: var(--primary-color);
+    text-shadow: 1px 1px var(--secondary-color);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+    border: 2px solid var(--border-color);
+}
+
+th, td {
+    padding: 0.6rem;
+    text-align: left;
+    border: 1px solid var(--border-color);
+}
+
+th {
+    background-color: var(--nav-bg);
+    color: var(--primary-color);
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+select {
+    width: 100%;
+    padding: 0.5rem;
+    border: 2px solid var(--border-color);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    margin-bottom: 0.5rem;
+    image-rendering: pixelated;
+}
+
+select {
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23${encodeURIComponent(getComputedStyle(document.documentElement).getPropertyValue('--text-color').trim())}' viewBox='0 0 16 16'%3e%3cpath fill-rule='evenodd' d='M8 1a.5.5 0 0 1 .5.5v11.793l3.146-3.147a.5.5 0 0 1 .708.708l-4 4a.5.5 0 0 1-.708 0l-4-4a.5.5 0 0 1 .708-.708L7.5 13.293V1.5A.5.5 0 0 1 8 1z'/%3e%3c/svg%3e"); /* Simple down arrow */
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    background-size: 10px;
+    padding-right: 1.5rem; /* Space for arrow */
+    /* Note: SVG color needs to be handled differently for light/dark themes if needed */
+}
+
+
+button, .btn {
+    background: var(--button-bg);
+    color: var(--button-text);
+    border: 2px solid var(--border-color);
+    padding: 0.5rem 1rem;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 10px;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    transition: background 0.2s, transform 0.1s;
+    box-shadow: 2px 2px 0px var(--border-color);
+}
+
+button:hover, .btn:hover {
+    background: var(--button-hover-bg);
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0px var(--border-color);
+}
+
+button:active, .btn:active {
+    transform: translate(2px, 2px);
+    box-shadow: none;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.login-link, .register-link {
+    text-align: center;
+    margin-top: 1rem;
+}
+
+.login-link a, .register-link a {
+    color: var(--primary-color);
+    text-decoration: underline;
+}
+
+/* Theme Switcher Styles */
+#theme-switcher {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    padding: 0.5rem;
+    background: var(--card-bg);
+    border: 2px solid var(--border-color);
+    cursor: pointer;
+    font-size: 1.2rem; /* Make icon bigger */
+    z-index: 1000;
+    box-shadow: 2px 2px 0px var(--border-color);
+}
+#theme-switcher:hover {
+    background: var(--nav-bg);
+}
+
+/* Pixelated Image Placeholder */
+.pixel-image {
+    width: 100%;
+    height: 150px;
+    background-color: var(--border-color);
+    border: 2px solid var(--dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-color);
+    font-size: 12px;
+    margin-bottom: 1rem;
+    image-rendering: pixelated;
+}
