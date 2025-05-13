@@ -16,29 +16,29 @@
     <jsp:include page="_customer_nav.jsp" />
 
     <div class="container">
-        <h2>Player Stats</h2>
+        <h2>Personal Details</h2>
         
         <div id="profile-view">
             <div class="profile-details">
                 <div class="detail-group">
-                    <div class="detail-label">First Name:</div>
-                    <div class="detail-value">${customer.firstName}</div>
+                    <div class="detail-label">First Name: ${customer.firstName}</div>
+                    <div class="detail-value">   </div>
                 </div>
                 <div class="detail-group">
-                    <div class="detail-label">Last Name:</div>
-                    <div class="detail-value">${customer.lastName}</div>
+                    <div class="detail-label">Last Name: ${customer.lastName}</div>
+                    <div class="detail-value"> </div>
                 </div>
                 <div class="detail-group">
-                    <div class="detail-label">Email:</div>
-                    <div class="detail-value">${customer.email}</div>
+                    <div class="detail-label">Email: ${customer.email}</div>
+                    <div class="detail-value"> </div>
                 </div>
                 <div class="detail-group">
-                    <div class="detail-label">Phone:</div>
-                    <div class="detail-value">${customer.phone}</div>
+                    <div class="detail-label">Phone: ${customer.phone}</div>
+                    <div class="detail-value"> </div>
                 </div>
                 <div class="detail-group">
-                    <div class="detail-label">Address:</div>
-                    <div class="detail-value">${customer.address}, ${customer.city}, ${customer.state}</div>
+                    <div class="detail-label">Address: ${customer.address}, ${customer.city}, ${customer.state}</div>
+                    <div class="detail-value"> </div>
                 </div>
             </div>
             <button onclick="toggleEdit(true)" class="btn" style="margin-top: 1rem;">EDIT PROFILE</button>

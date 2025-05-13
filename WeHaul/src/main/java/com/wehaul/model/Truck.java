@@ -1,12 +1,11 @@
 package com.wehaul.model;
 
-import java.sql.Date;
-import java.math.BigDecimal;
+import java.sql.Date; // Or java.time.LocalDate
 
 public class Truck {
     private int truckId;
-    private int typeId;
-    private String typeName;
+    private Integer typeId; // Store the ID
+    private String typeName; // Store the name of the type
     private String licensePlate;
     private String make;
     private String model;
@@ -15,10 +14,9 @@ public class Truck {
     private Date lastMaintenanceDate;
     private String status;
     private String currentLocation;
-    private BigDecimal dailyRate;
-    private String capacity;
 
-    // Getters and Setters
+    // Constructors, Getters, and Setters
+
     public int getTruckId() {
         return truckId;
     }
@@ -27,11 +25,11 @@ public class Truck {
         this.truckId = truckId;
     }
 
-    public int getTypeId() {
+    public Integer getTypeId() {
         return typeId;
     }
 
-    public void setTypeId(int typeId) {
+    public void setTypeId(Integer typeId) {
         this.typeId = typeId;
     }
 
@@ -107,19 +105,5 @@ public class Truck {
         this.currentLocation = currentLocation;
     }
 
-    public BigDecimal getDailyRate() {
-        return dailyRate;
-    }
-
-    public void setDailyRate(BigDecimal dailyRate) {
-        this.dailyRate = dailyRate;
-    }
-
-    public String getCapacity() {
-        return capacity;
-    }
-
-    public void setCapacity(String capacity) {
-        this.capacity = capacity;
-    }
+    // toString() might be useful for debugging
 }

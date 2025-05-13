@@ -1,11 +1,13 @@
 package com.wehaul.model;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 public class RentalOrder {
     private int orderId;
     private int customerId;
-    private int truckId;
+    private Integer truckId;
+    private Integer truckTypeId;
     private Timestamp pickupDate;
     private Timestamp returnDate;
     private String pickupLocation;
@@ -14,7 +16,7 @@ public class RentalOrder {
     private String approvalStatus = "pending"; // pending/approved/rejected
     private Integer assignedAdminId;
     private Integer assignedTruckId;
-    private double totalCost;
+    private BigDecimal totalCost;
     private Timestamp createdAt;
     private String nepaliPickupLocation;
     private String nepaliReturnLocation;
@@ -40,7 +42,7 @@ public class RentalOrder {
         return truckId;
     }
 
-    public void setTruckId(int truckId) {
+    public void setTruckId(Integer truckId) {
         this.truckId = truckId;
     }
 
@@ -108,11 +110,11 @@ public class RentalOrder {
         this.assignedTruckId = assignedTruckId;
     }
 
-    public double getTotalCost() {
+    public BigDecimal getTotalCost() {
         return totalCost;
     }
 
-    public void setTotalCost(double totalCost) {
+    public void setTotalCost(BigDecimal totalCost) {
         this.totalCost = totalCost;
     }
 
@@ -139,4 +141,12 @@ public class RentalOrder {
     public void setNepaliReturnLocation(String nepaliReturnLocation) {
         this.nepaliReturnLocation = nepaliReturnLocation;
     }
+
+	public Integer getTruckTypeId() {
+		return truckTypeId;
+	}
+
+	public void setTruckTypeId(Integer truckTypeId) {
+		this.truckTypeId = truckTypeId;
+	}
 }

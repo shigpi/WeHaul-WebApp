@@ -25,7 +25,7 @@
 
         <h3>Quick Actions:</h3>
         <ul>
-            <li><a href="#" class="btn">BOOK TRUCK</a></li>
+            <li><a href="${pageContext.request.contextPath}/customer/book-truck" class="btn">BOOK TRUCK</a></li>
             <li><a href="${pageContext.request.contextPath}/customer/rentals" class="btn">MY RENTALS</a></li>
         </ul>
     </div>
