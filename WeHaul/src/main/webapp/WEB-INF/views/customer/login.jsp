@@ -13,9 +13,6 @@
     </div>
     
     <div class="container"> 
-        <div class="pixel-image" style="text-align: center; margin-bottom: 1rem;">
-             <img src="${pageContext.request.contextPath}/resources/images/pixel-key.png" alt="Pixelated Key" style="image-rendering: pixelated; width: 64px; height: 64px;">
-        </div>
         <h2>Enter Credentials</h2>
         <form action="${pageContext.request.contextPath}/customer/login" method="post">
             <div class="form-group">

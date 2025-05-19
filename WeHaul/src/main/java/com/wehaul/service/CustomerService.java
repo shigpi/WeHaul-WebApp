@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.wehaul.model.Customer;
 import com.wehaul.config.DbConfig;
@@ -84,6 +86,65 @@ public class CustomerService {
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("Database driver not found", e);
         }
+    }
+    
+    public List<Customer> getAllCustomers() throws SQLException, ClassNotFoundException {
+        List<Customer> customers = new ArrayList<>();
+        String sql = "SELECT customer_id, first_name, last_name, email, phone, address, city, state, is_admin, created_at, updated_at " +
+                     "FROM customers ORDER BY last_name, first_name";
+
+        try (Connection conn = DbConfig.getDbConnection(); 
+             PreparedStatement ps = conn.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+
+            while (rs.next()) {
+                Customer customer = new Customer();
+                customer.setCustomerId(rs.getInt("customer_id"));
+                customer.setFirstName(rs.getString("first_name"));
+                customer.setLastName(rs.getString("last_name"));
+                customer.setEmail(rs.getString("email"));
+                customer.setPhone(rs.getString("phone"));
+                customer.setAddress(rs.getString("address"));
+                customer.setCity(rs.getString("city"));
+                customer.setState(rs.getString("state"));
+                customer.setAdmin(rs.getBoolean("is_admin"));
+                customer.setCreatedAt(rs.getTimestamp("created_at"));
+                customer.setUpdatedAt(rs.getTimestamp("updated_at"));
+                // Note: Password hash is usually not fetched for general listings
+                customers.add(customer);
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error fetching all customers: " + e.getMessage());
+            throw e;
+        }
+        return customers;
+    }
+    
+    public Customer getCustomerById(int customerId) throws SQLException, ClassNotFoundException {
+        Customer customer = null;
+        String sql = "SELECT * FROM customers WHERE customer_id = ?";
+        try (Connection conn = DbConfig.getDbConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, customerId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    customer = new Customer();
+                    customer.setCustomerId(rs.getInt("customer_id"));
+                    customer.setFirstName(rs.getString("first_name"));
+                    customer.setLastName(rs.getString("last_name"));
+                    customer.setEmail(rs.getString("email"));
+                    customer.setPhone(rs.getString("phone"));
+                    customer.setAddress(rs.getString("address"));
+                    customer.setCity(rs.getString("city"));
+                    customer.setState(rs.getString("state"));
+                    customer.setAdmin(rs.getBoolean("is_admin"));
+                    customer.setCreatedAt(rs.getTimestamp("created_at"));
+                    customer.setUpdatedAt(rs.getTimestamp("updated_at"));
+                    // Avoid loading password hash unless specifically needed for auth
+                }
+            }
+        }
+        return customer;
     }
 }
 

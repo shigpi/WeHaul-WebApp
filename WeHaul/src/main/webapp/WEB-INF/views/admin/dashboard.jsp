@@ -49,29 +49,40 @@
     <jsp:include page="_admin_nav.jsp" />
     
     <div class="container">
-         <div class="pixel-image" style="text-align: center; margin-bottom: 1rem;">
-             <img src="${pageContext.request.contextPath}/resources/images/pixel-graph.png" alt="Pixelated Stats Icon" style="image-rendering: pixelated; width: 64px; height: 64px;">
-        </div>
+    
         <h2>System Stats</h2>
-        <div class="stats">
-            <div class="stat-card">
-                <h3>Total Customers</h3>
-                <p>0</p> <%-- Placeholder --%>
-            </div>
-            <div class="stat-card">
-                <h3>Available Trucks</h3>
-                <p>0</p> <%-- Placeholder --%>
-            </div>
-            <div class="stat-card">
-                <h3>Active Rentals</h3>
-                <p>0</p> <%-- Placeholder --%>
-            </div>
-            <div class="stat-card">
-                <h3>Pending Orders</h3>
-                <p>0</p> <%-- Placeholder --%>
-            </div>
-        </div>
         
+        <div class="stats">
+		    <div class="stat-card">
+		        <h3>Total Customers</h3>
+		        <p id="totalCustomersStat">
+		            <%-- Accesses dashboardStats.totalCustomers --%>
+		            <c:out value="${not empty dashboardStats ? dashboardStats.totalCustomers : 'N/A'}" />
+		        </p>
+		    </div>
+		    <div class="stat-card">
+		        <h3>Available Trucks</h3>
+		        <p id="availableTrucksStat">
+		            <%-- Accesses dashboardStats.availableTrucks --%>
+		            <c:out value="${not empty dashboardStats ? dashboardStats.availableTrucks : 'N/A'}" />
+		        </p>
+		    </div>
+		    <div class="stat-card">
+		        <h3>Active Rentals</h3>
+		        <p id="activeRentalsStat">
+		            <%-- Accesses dashboardStats.activeRentals --%>
+		            <c:out value="${not empty dashboardStats ? dashboardStats.activeRentals : 'N/A'}" />
+		        </p>
+		    </div>
+		    <div class="stat-card">
+		        <h3>Pending Orders</h3>
+		        <p id="pendingOrdersStat">
+		            <%-- Accesses dashboardStats.pendingOrders --%>
+		            <c:out value="${not empty dashboardStats ? dashboardStats.pendingOrders : 'N/A'}" />
+		        </p>
+		    </div>
+		</div>
+		                
         <div class="recent-activity">
             <h2>Recent Activity</h2>
             <p>No recent activity</p> <%-- Placeholder --%>

@@ -13,9 +13,6 @@
     </div>
     
     <div class="container">
-         <div class="pixel-image" style="text-align: center; margin-bottom: 1rem;">
-             <img src="${pageContext.request.contextPath}/resources/images/pixel-new-player.png" alt="Pixelated New Player Icon" style="image-rendering: pixelated; width: 64px; height: 64px;">
-        </div>
         <h2>Register New Account</h2>
         <form action="${pageContext.request.contextPath}/customer/register" method="post">
             

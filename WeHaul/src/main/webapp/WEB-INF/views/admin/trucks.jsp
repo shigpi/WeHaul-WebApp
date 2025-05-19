@@ -38,9 +38,12 @@
                         <td>${truck.make} ${truck.model}</td>
                         <td>${truck.year}</td>
                         <td>${truck.status}</td>
-                        <td>
-                            <a href="#" class="btn">EDIT</a>
-                            <a href="#" class="btn" style="background: var(--secondary-color);">DELETE</a>
+                        <td class="action-forms">
+                            <form action="${pageContext.request.contextPath}/admin/deleteTruck" method="POST"
+                                  onsubmit="return confirm('Are you sure you want to delete truck #${truck.truckId} - ${truck.licensePlate}? This action cannot be undone.');">
+                                <input type="hidden" name="truckId" value="${truck.truckId}">
+                                <button type="submit" class="btn" style="background: var(--secondary-color);">DELETE</button>
+                            </form>
                         </td>
                     </tr>
                 </c:forEach>

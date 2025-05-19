@@ -34,25 +34,13 @@
             <br><strong>NOTE:</strong> Return date and final cost are estimates subject to confirmation.
         </p>
 
-        <%-- Display any error messages passed from the servlet --%>
-        <c:if test="${not empty errorMessage}">
-            <p style="color: var(--secondary-color); text-align: center; border: 1px solid var(--secondary-color); padding: 0.5rem; margin-bottom:1rem;">
-                <c:out value="${errorMessage}" />
-            </p>
-        </c:if>
-        <c:if test="${not empty successMessage}">
-            <p style="color: var(--primary-color); text-align: center; border: 1px solid var(--primary-color); padding: 0.5rem; margin-bottom:1rem;">
-                <c:out value="${successMessage}" />
-            </p>
-        </c:if>
-
-        <form action="${pageContext.request.contextPath}/customer/submit-booking" method="POST"> <%-- Adjust action URL as needed --%>
+        <form action="${pageContext.request.contextPath}/customer/submit-booking" method="POST"> 
 
             <div class="form-group">
                 <label for="truckType">TRUCK TYPE:</label>
                 <select id="truckType" name="truckTypeId" required>
                     <option value="">-- SELECT TRUCK TYPE --</option>
-                    <c:forEach var="type" items="${truckTypes}"> <%-- Assumes 'truckTypes' is passed from servlet --%>
+                    <c:forEach var="type" items="${truckTypes}"> 
                         <option value="${type.typeId}">${type.name} - Capacity: ${type.capacity}, Rate: Rs. <fmt:formatNumber value="${type.dailyRate}" type="number" minFractionDigits="2" maxFractionDigits="2"/>/day</option>
                     </c:forEach>
                 </select>
@@ -62,10 +50,7 @@
                 <label for="pickupDate">PICKUP DATE & TIME:</label>
                 <input type="datetime-local" id="pickupDate" name="pickupDate" required
                        min="<fmt:formatDate value="<%=new java.util.Date()%>" pattern="yyyy-MM-dd'T'HH:mm"/>">
-                       <%-- Sets min to current date/time --%>
             </div>
-
-            <%-- Removed Return Date Input --%>
 
             <fieldset class="location-group">
                 <legend>PICKUP LOCATION</legend>

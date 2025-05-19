@@ -1,11 +1,11 @@
 package com.wehaul.model;
 
-import java.sql.Date; // Or java.time.LocalDate
+import java.sql.Date; 
 
 public class Truck {
-    private int truckId;
-    private Integer typeId; // Store the ID
-    private String typeName; // Store the name of the type
+    private Integer truckId;
+    private Integer typeId; 
+    private String typeName; 
     private String licensePlate;
     private String make;
     private String model;
@@ -15,13 +15,12 @@ public class Truck {
     private String status;
     private String currentLocation;
 
-    // Constructors, Getters, and Setters
-
-    public int getTruckId() {
+    //Getters and Setters
+    public Integer getTruckId() {
         return truckId;
     }
 
-    public void setTruckId(int truckId) {
+    public void setTruckId(Integer truckId) {
         this.truckId = truckId;
     }
 
@@ -104,6 +103,4 @@ public class Truck {
     public void setCurrentLocation(String currentLocation) {
         this.currentLocation = currentLocation;
     }
-
-    // toString() might be useful for debugging
 }

@@ -1,7 +1,10 @@
 package com.wehaul.service;
 
 import com.wehaul.config.DbConfig;
+import com.wehaul.model.Customer;
 import com.wehaul.model.RentalOrder;
+import com.wehaul.model.Truck;
+import com.wehaul.model.TruckType;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -10,32 +13,28 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class RentalOrderService {
 
-    // Method to create a rental order request (truck_id will now be populated)
     public void createRentalOrder(RentalOrder order) throws SQLException, ClassNotFoundException {
         String sql = "INSERT INTO rental_orders (customer_id, truck_id, pickup_date, return_date, " +
                      "pickup_location, return_location, nepali_pickup_location, nepali_return_location, " +
-                     "status, approval_status, assigned_admin_id, total_cost, created_at) " + // No assigned_truck_id as separate, truck_id is the assigned one
-                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"; // Adjusted placeholder count
+                     "status, approval_status, assigned_admin_id, assigned_truck_id, total_cost, created_at) " + 
+                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"; 
 
         try (Connection conn = DbConfig.getDbConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             int paramIndex = 1;
-            ps.setInt(paramIndex++, order.getCustomerId());
-
-            // truck_id should now have a value if findAvailableTruckForBooking was successful
-            if (order.getAssignedTruckId() != null) { // Using assignedTruckId from model for the truck_id column
+            ps.setInt(paramIndex++, order.getCustomerId()); 
+            
+            if (order.getAssignedTruckId() != null) {
                 ps.setInt(paramIndex++, order.getAssignedTruckId());
             } else {
-                // This case should ideally not be reached if a truck is always assigned
-                throw new SQLException("Truck ID cannot be null when creating a confirmed rental order.");
+                ps.setNull(paramIndex++, Types.INTEGER); 
             }
+            
 
             ps.setTimestamp(paramIndex++, order.getPickupDate());
             ps.setTimestamp(paramIndex++, order.getReturnDate());
@@ -43,11 +42,17 @@ public class RentalOrderService {
             ps.setString(paramIndex++, order.getReturnLocation());
             ps.setString(paramIndex++, order.getNepaliPickupLocation());
             ps.setString(paramIndex++, order.getNepaliReturnLocation());
-            ps.setString(paramIndex++, order.getStatus()); // e.g., "confirmed"
-            ps.setString(paramIndex++, order.getApprovalStatus()); // e.g., "approved" (if auto-approved)
+            ps.setString(paramIndex++, "pending"); 
+            ps.setString(paramIndex++, order.getApprovalStatus()); 
 
-            if (order.getAssignedAdminId() != null) { // Could be system/auto-assigned ID
+            if (order.getAssignedAdminId() != null) { 
                 ps.setInt(paramIndex++, order.getAssignedAdminId());
+            } else {
+                ps.setNull(paramIndex++, Types.INTEGER);
+            }
+            
+            if (order.getAssignedTruckId() != null) { 
+                ps.setInt(paramIndex++, order.getAssignedTruckId());
             } else {
                 ps.setNull(paramIndex++, Types.INTEGER);
             }
@@ -69,17 +74,6 @@ public class RentalOrderService {
         }
     }
 
-    /**
-     * Finds a specific available truck_id of the requested type for the given dates.
-     * This is a more complex inventory check.
-     *
-     * @param requestedTruckTypeId The ID of the truck type.
-     * @param pickupDate The desired pickup timestamp.
-     * @param estimatedReturnDate The desired return timestamp.
-     * @return An Integer representing the truck_id if one is found, otherwise null.
-     * @throws SQLException If a database access error occurs.
-     * @throws ClassNotFoundException If the DB driver is not found.
-     */
     public Integer findAndReserveAvailableTruckForBooking(int requestedTruckTypeId, Timestamp pickupDate, Timestamp estimatedReturnDate)
             throws SQLException, ClassNotFoundException {
 
@@ -92,8 +86,8 @@ public class RentalOrderService {
 
         // Step 2: For each operational truck, check if it's free during the requested period
         String sqlCheckTruckConflict = "SELECT COUNT(ro.order_id) FROM rental_orders ro " +
-                                       "WHERE ro.truck_id = ? " + // Specific truck
-                                       "AND ro.status IN (?, ?, ?) " + // Confirmed, Approved, In-Progress
+                                       "WHERE ro.truck_id = ? " +
+                                       "AND ro.status IN (?, ?, ?) " + 
                                        "AND ro.pickup_date < ? " +
                                        "AND ro.return_date > ?";
 
@@ -110,16 +104,11 @@ public class RentalOrderService {
 
                 try (ResultSet rs = psCheckConflict.executeQuery()) {
                     if (rs.next() && rs.getInt(1) == 0) {
-                        // This truck has no conflicting bookings, it's available!
-                        // **RESERVATION/LOCKING MECHANISM NEEDED HERE FOR ROBUSTNESS**
-                        // For simplicity, we assume immediate assignment.
-                        // In a high-concurrency system, you'd update truck status to 'reserved'
-                        // within a transaction before returning the ID.
                         System.out.println("Found available truck ID: " + truckId + " for type: " + requestedTruckTypeId);
                         return truckId;
                     }
                 }
-                psCheckConflict.clearParameters(); // Clear parameters for next iteration
+                psCheckConflict.clearParameters(); 
             }
         } catch (SQLException e) {
             System.err.println("Error finding available truck: " + e.getMessage());
@@ -130,18 +119,12 @@ public class RentalOrderService {
         }
 
         System.out.println("No specific truck of type " + requestedTruckTypeId + " is available for the selected period.");
-        return null; // No available truck found
+        return null; 
     }
-
-    // Helper: Get IDs of all operational trucks for a given type_id
+    
     private List<Integer> getOperationalTruckIdsOfType(int truckTypeId) throws SQLException, ClassNotFoundException {
         List<Integer> truckIds = new ArrayList<>();
-        // Additionally, only consider trucks that are currently 'available' if your workflow implies this.
-        // If a truck is 'rented' its existing rental_order would cause a conflict.
-        // If it's 'maintenance', it shouldn't be bookable.
         String sql = "SELECT truck_id FROM trucks WHERE type_id = ? AND status = 'available'";
-        // Or, if 'maintenance' is short-term and doesn't block future bookings far out:
-        // String sql = "SELECT truck_id FROM trucks WHERE type_id = ? AND status != 'decommissioned'";
 
 
         try (Connection conn = DbConfig.getDbConnection();
@@ -161,11 +144,7 @@ public class RentalOrderService {
         }
         return truckIds;
     }
-
-    /**
-     * Optional: Method to update truck status (e.g., to 'rented' or 'reserved')
-     * This should be part of a transaction with createRentalOrder.
-     */
+    
     public boolean updateTruckStatus(int truckId, String newStatus, Connection conn) throws SQLException {
         String sql = "UPDATE trucks SET status = ? WHERE truck_id = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -174,6 +153,87 @@ public class RentalOrderService {
             int affectedRows = ps.executeUpdate();
             return affectedRows > 0;
         }
-        // Connection is managed externally if passed in (for transactions)
     }
+    
+    public List<RentalOrder> getRentalOrdersByCustomerId(int customerId) throws SQLException, ClassNotFoundException {
+        List<RentalOrder> orders = new ArrayList<>();
+        String sql = "SELECT ro.order_id, ro.customer_id, " +
+                     "ro.truck_id AS requested_truck_type_id_from_db, " +
+                     "ro.assigned_truck_id, " +
+                     "ro.pickup_date, ro.return_date, ro.pickup_location, ro.return_location, " +
+                     "ro.nepali_pickup_location, ro.nepali_return_location, ro.status, ro.approval_status, " +
+                     "ro.assigned_admin_id, ro.total_cost, ro.created_at, " +
+                     "c.first_name AS customer_first_name, c.last_name AS customer_last_name, " +
+                     "t_assigned.license_plate AS assigned_truck_license_plate, " +
+                     "t_assigned.type_id AS assigned_truck_db_type_id, " +
+                     "assigned_tt.name AS assigned_truck_actual_type_name, " +
+                     "assigned_tt.type_id AS assigned_truck_actual_type_id_from_type_table " +
+                     "FROM rental_orders ro " +
+                     "JOIN customers c ON ro.customer_id = c.customer_id " +
+                     "LEFT JOIN trucks t_assigned ON ro.assigned_truck_id = t_assigned.truck_id " +
+                     "LEFT JOIN truck_types assigned_tt ON t_assigned.type_id = assigned_tt.type_id " +
+                     "WHERE ro.customer_id = ? " +
+                     "ORDER BY ro.created_at DESC";
+
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            conn = DbConfig.getDbConnection();
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, customerId);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                RentalOrder order = new RentalOrder();
+                order.setOrderId(rs.getInt("order_id"));
+                order.setCustomerId(rs.getInt("customer_id"));
+                order.setTruckId(rs.getObject("requested_truck_type_id_from_db", Integer.class));
+                order.setAssignedTruckId(rs.getObject("assigned_truck_id", Integer.class));
+                order.setPickupDate(rs.getTimestamp("pickup_date"));
+                order.setReturnDate(rs.getTimestamp("return_date"));
+                order.setPickupLocation(rs.getString("pickup_location"));
+                order.setReturnLocation(rs.getString("return_location"));
+                order.setNepaliPickupLocation(rs.getString("nepali_pickup_location"));
+                order.setNepaliReturnLocation(rs.getString("nepali_return_location"));
+                order.setStatus(rs.getString("status"));
+                order.setApprovalStatus(rs.getString("approval_status"));
+                order.setAssignedAdminId(rs.getObject("assigned_admin_id", Integer.class));
+                order.setTotalCost(rs.getBigDecimal("total_cost"));
+                order.setCreatedAt(rs.getTimestamp("created_at"));
+
+                Customer customer = new Customer();
+                customer.setCustomerId(order.getCustomerId());
+                customer.setFirstName(rs.getString("customer_first_name"));
+                customer.setLastName(rs.getString("customer_last_name"));
+                order.setCustomer(customer);
+
+                if (order.getAssignedTruckId() != null) {
+                    Truck assignedTruck = new Truck();
+                    assignedTruck.setTruckId(order.getAssignedTruckId());
+                    assignedTruck.setLicensePlate(rs.getString("assigned_truck_license_plate"));
+                    assignedTruck.setTypeId(rs.getInt("assigned_truck_db_type_id"));
+                    order.setAssignedTruckInfo(assignedTruck);
+
+                    TruckType truckType = new TruckType();
+                    truckType.setTypeId(rs.getInt("assigned_truck_actual_type_id_from_type_table"));
+                    truckType.setName(rs.getString("assigned_truck_actual_type_name"));
+                    order.setTruckTypeInfo(truckType);
+                }
+                orders.add(order);
+            }
+        } catch (SQLException | ClassNotFoundException e) {
+            System.err.println("Error fetching rental orders for customer ID " + customerId + ": " + e.getMessage());
+            throw e;
+        } finally {
+            if (rs != null) try { rs.close(); } catch (SQLException e) { /* ignored */ }
+            if (ps != null) try { ps.close(); } catch (SQLException e) { /* ignored */ }
+            if (conn != null) try { conn.close(); } catch (SQLException e) { /* ignored */ }
+        }
+        return orders;
+    }
+    
+    
+    
 }

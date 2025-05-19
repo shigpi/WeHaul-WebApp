@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,18 +8,28 @@
     <title>WeHaul - Your Kathmandu Moving Partner</title>
     <link href="${pageContext.request.contextPath}/resources/css/style.css" rel="stylesheet">
 </head>
-<body> <%-- Add class="dark-theme" here manually or via JS for dark mode testing --%>
-
+<body> 
     <header>
         <div class="container">
             <div id="branding">
-                <h1><a href="${pageContext.request.contextPath}/">WE_HAUL</a></h1> <%-- Using Retro Name Style --%>
+                <h1><a href="${pageContext.request.contextPath}/">WE_HAUL</a></h1>
             </div>
             <nav>
                 <ul>
-                    <li class="current"><a href="${pageContext.request.contextPath}/">Home</a></li>
-                    <li><a href="${pageContext.request.contextPath}/customer/login">Login</a></li>
-                    <li><a href="${pageContext.request.contextPath}/customer/register">Register</a></li>
+                    <li class="${pageContext.request.servletPath == '/home' || pageContext.request.servletPath == '/' ? 'current' : ''}"><a href="${pageContext.request.contextPath}/">Home</a></li>
+                    <li class="${pageContext.request.servletPath == '/about' ? 'current' : ''}"><a href="${pageContext.request.contextPath}/about">About Us</a></li>
+                    <li class="${pageContext.request.servletPath == '/contact' ? 'current' : ''}"><a href="${pageContext.request.contextPath}/contact">Contact Us</a></li>
+                    
+                    <c:choose>
+                        <c:when test="${not empty sessionScope.customer}">
+                            <li class="${pageContext.request.servletPath == '/customer/dashboard' ? 'current' : ''}"><a href="${pageContext.request.contextPath}/customer/dashboard">Dashboard</a></li>
+                            <li><a href="${pageContext.request.contextPath}/customer/logout">Logout</a></li>
+                        </c:when>
+                        <c:otherwise>
+                            <li class="${pageContext.request.servletPath == '/customer/login' ? 'current' : ''}"><a href="${pageContext.request.contextPath}/customer/login">Login</a></li>
+                            <li class="${pageContext.request.servletPath == '/customer/register' ? 'current' : ''}"><a href="${pageContext.request.contextPath}/customer/register">Register</a></li>
+                        </c:otherwise>
+                    </c:choose>
                 </ul>
             </nav>
         </div>
@@ -79,7 +89,7 @@
     </section>
 
     <footer>
-        <p>WE_HAUL © 2025</p> <%-- Using Retro Name Style --%>
+        <p>WE_HAUL © 2025</p>
     </footer>
     
     <button id="theme-switcher">?</button> 
